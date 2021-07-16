@@ -1,0 +1,32 @@
+﻿@inject NavigationManager NavigationManager
+
+<MudCard Class="mx-2 my-2" Style="width:350px;">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h5" Align="Align.Center">@Car.Year @Car.Brand @Car.Model</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardMedia Image="@Car.ImageUrl" Height="200" />
+    <MudCardContent>
+        <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">Rent for $@Car.RentalPrice per day</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Class="ml-11" Variant="Variant.Text" Color="Color.Primary" OnClick="RentCar">Rent Car</MudButton>
+        <MudButton Class="ml-15" Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => OnClickCallBack.InvokeAsync(Car.CarId))">View Car</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public Car Car { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnClickCallBack { get; set; }
+
+    private void RentCar()
+    {
+        NavigationManager.NavigateTo($"/rental/{Car.CarId}");
+    }
+
+}

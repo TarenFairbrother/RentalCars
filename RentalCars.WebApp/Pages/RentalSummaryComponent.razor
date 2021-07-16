@@ -1,0 +1,93 @@
+﻿@page "/rentalsummary"
+
+@inject IWebApiRepository webApi
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject IJSRuntime jsRuntime
+@inject NavigationManager NavigationManager
+
+<br />
+<br />
+
+
+<MudGrid>
+
+    <MudItem xl="2"></MudItem>
+
+    <MudItem xl="8" Class="mx-auto">
+
+        <MudText Typo="Typo.h2">Rental Summary</MudText>
+
+        <br />
+        <br />
+
+        <MudDivider DividerType="DividerType.FullWidth" />
+
+        @if (rental != null)
+        {
+            <MudGrid>
+
+                <MudItem xl="6">
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Rental Car: @car.Year @car.Brand @car.Make @car.Model</MudText>
+                    <img style="max-width: 400px; max-height: 250px;" src="@car.ImageUrl" />
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Rental Price Per Day: $@car.RentalPrice</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Start Date: @rental.StartDate?.ToString("MM/dd/yyyy")</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Return Date: @rental.ReturnDate?.ToString("MM/dd/yyyy")</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Total Cost: $@rental.TotalPrice</MudText>
+                </MudItem>
+
+                <MudItem xl="6">
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Name: @rental.FirstName @rental.LastName</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">City: @rental.City</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Province: @rental.Province</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Postal Code: @rental.PostalCode</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Phone Number: @rental.PhoneNumber</MudText>
+                    <MudText Typo="Typo.h5" Class="d-flex py-2">Email Address: @rental.EmailAddress</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ConfirmRental" Class="pa-3 my-2">Confirm Rental</MudButton>
+
+
+        }
+
+    </MudItem>
+
+    <MudItem xl="2"></MudItem>
+
+</MudGrid>
+
+
+
+
+@code {
+
+    Rental rental = new Rental();
+
+    Car car = new Car();
+
+    double totalPrice = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        rental = await sessionStorage.GetItemAsync<Rental>("rental");
+
+        car = await webApi.GetCarById(rental.Car.CarId);
+
+        var numberOfDays = (rental.ReturnDate - rental.StartDate);
+
+        totalPrice = (double)(car.RentalPrice * numberOfDays).Value.TotalDays;
+
+        rental.TotalPrice = totalPrice;
+
+    }
+
+    private async Task ConfirmRental()
+    {
+        if (rental != null)
+            await webApi.AddNewRental(rental);
+
+        NavigationManager.NavigateTo("/cars");
+    }
+
+}

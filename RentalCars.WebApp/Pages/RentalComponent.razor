@@ -1,0 +1,88 @@
+﻿@page "/rental/{carId:int}"
+@inject IWebApiRepository webApi
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject NavigationManager NavigationManager
+
+<br />
+<br />
+
+
+<MudGrid>
+
+    <MudItem xl="2"></MudItem>
+
+    <MudItem xl="8" Class="mx-auto">
+
+        <MudText Typo="Typo.h3" Class="mx-auto">Rental Information</MudText>
+
+        <br />
+        <br />
+
+        <EditForm Model="@rental" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="First Name"
+                                  @bind-Value="rental.FirstName" For="@(() => rental.FirstName)" />
+                    <MudTextField Label="Last Name"
+                                  @bind-Value="rental.LastName" For="@(() => rental.LastName)" />
+                    <MudTextField Label="Phone Number"
+                                  @bind-Value="rental.PhoneNumber" For="@(() => rental.PhoneNumber)" />
+                    <MudTextField Label="City"
+                                  @bind-Value="rental.City" For="@(() => rental.City)" />
+                    <MudTextField Label="Province"
+                                  @bind-Value="rental.Province" For="@(() => rental.Province)" />
+                    <MudTextField Label="Postal Code"
+                                  @bind-Value="rental.PostalCode" For="@(() => rental.PostalCode)" />
+                    <MudTextField Label="Email Address"
+                                  @bind-Value="rental.EmailAddress" For="@(() => rental.EmailAddress)" />
+                    <div class="d-inline-flex ml-11">
+                        <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Pick Up date"
+                                       @bind-Date="@rental.StartDate" Class="pa-4 ml-15"
+                                       For="(() => rental.StartDate)" />
+                        <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Drop Off date"
+                                       @bind-Date="@rental.ReturnDate" Class="pa-4 ml-10"                                       
+                                       For="(() => rental.ReturnDate)" />
+                    </div>
+                </MudCardContent>
+                <MudCardActions>
+                </MudCardActions>
+                <MudCardActions>
+                    <div class="mx-auto pa-6">
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Continue</MudButton>
+                    </div>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+
+    </MudItem>
+
+    <MudItem xl="2"></MudItem>
+
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public int carId { get; set; }
+
+    public Car car = new Car();
+
+    public Rental rental = new Rental();
+
+    protected override async Task OnInitializedAsync()
+    {
+        car = await webApi.GetCarById(carId);
+    }
+
+    private async Task OnValidSubmit()
+    {
+
+        rental.Car = car;
+
+        await sessionStorage.SetItemAsync("rental", rental);
+
+        NavigationManager.NavigateTo("/rentalsummary");
+
+    }
+}
