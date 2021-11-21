@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +10,8 @@ namespace RentalCars.Models
 {
    public class Car
     {
-        [Required]
+        [Key]
         public int CarId { get; set; }
-        public int? RentalId { get; set; }
         [Required]
         public string Brand { get; set; }
         [Required]

@@ -21,12 +21,13 @@ namespace RentalCars.WebAPI.Repository
 
         public async Task<List<Car>> GetCars()
         {
-            return await db.Cars.ToListAsync();
+            return await db.Cars.AsNoTracking().ToListAsync();
         }
 
         public async Task<Car> GetCarById(int carId)
         {
-            return await db.Cars.FindAsync(carId);
+            var car = await db.Cars.AsNoTracking().SingleOrDefaultAsync(c => c.CarId == carId);
+            return car;
         }
 
         public async Task<List<Car>> GetFeaturedCars()
@@ -37,6 +38,14 @@ namespace RentalCars.WebAPI.Repository
         public async Task<List<Car>> GetCarsByBrand(string brand)
         {
             return await db.Cars.Where(x => x.Brand.ToLower().Contains(brand.ToLower())).ToListAsync();
+        }
+
+        public async Task UpdateRentalCar(Car car)
+        {
+            var rentalCar = await db.Cars.AsNoTracking().SingleOrDefaultAsync(c => c.CarId == car.CarId);
+            rentalCar = car;
+            db.Cars.Update(rentalCar);
+            await db.SaveChangesAsync();
         }
 
         public async Task AddNewRentalCar(Car car)
@@ -62,6 +71,7 @@ namespace RentalCars.WebAPI.Repository
         {
             await db.Rentals.AddAsync(rental);
             await db.SaveChangesAsync();
+            db.Entry(rental).State = EntityState.Detached;
         }
 
         #endregion

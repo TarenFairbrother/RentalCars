@@ -39,6 +39,12 @@ namespace RentalCars.WebApp.Repository
             return await httpClient.GetFromJsonAsync<List<Car>>(baseURl + $"cars/brand/{brand}");
         }
 
+        public async Task UpdateCar(int carId, Car car)
+        {
+            var response = await httpClient.PutAsJsonAsync(baseURl + $"Cars/{carId}", car );
+            await HandleError(response);
+        }
+
         public async Task AddNewCar(Car car)
         {
             var response = await httpClient.PostAsJsonAsync(baseURl + "Cars", car);

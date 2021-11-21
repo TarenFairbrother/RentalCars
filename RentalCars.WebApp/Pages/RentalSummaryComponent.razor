@@ -72,7 +72,7 @@
     {
         rental = await sessionStorage.GetItemAsync<Rental>("rental");
 
-        car = await webApi.GetCarById(rental.Car.CarId);
+        car = await webApi.GetCarById(rental.CarId);
 
         var numberOfDays = (rental.ReturnDate - rental.StartDate);
 
@@ -85,9 +85,15 @@
     private async Task ConfirmRental()
     {
         if (rental != null)
+        {
             await webApi.AddNewRental(rental);
 
-        NavigationManager.NavigateTo("/cars");
+            car.Rented = true;
+            await webApi.UpdateCar(car.CarId, car);
+
+            NavigationManager.NavigateTo("/cars");
+
+        }
     }
 
 }

@@ -14,5 +14,6 @@ namespace RentalCars.WebApp.Repository
         Task<List<Car>> GetFeaturedCars();
         Task<Rental> GetRentalById(int rentalId);
         Task<List<Rental>> GetRentals();
+        Task UpdateCar(int carId, Car car);
     }
 }

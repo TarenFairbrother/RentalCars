@@ -32,10 +32,10 @@ namespace RentalCars
 
             services.AddDbContext<RentalCarsDbContext>(options =>
             {
-                options.UseInMemoryDatabase("RentalCars");
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddTransient<IRentalCarsDbRepository, RentalCarsDbRepository>();
+            services.AddScoped<IRentalCarsDbRepository, RentalCarsDbRepository>();
 
 
             services.AddControllers();
@@ -62,9 +62,6 @@ namespace RentalCars
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
 
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RentalCars v1"));

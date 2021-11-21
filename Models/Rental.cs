@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ namespace RentalCars.Models
 {
    public class Rental
     {
-        public int? RentalId { get; set; }
+        [Key]
+        public int RentalId { get; set; }
         [Required]
         public DateTime? StartDate { get; set; }
         [Required]
@@ -32,6 +34,8 @@ namespace RentalCars.Models
         public string PostalCode { get; set; }
         public string Status { get; set; }
         public double TotalPrice { get; set; }
+        public int CarId { get; set; }
+        [ForeignKey("CarId")]
         public Car Car { get; set; }
 
 

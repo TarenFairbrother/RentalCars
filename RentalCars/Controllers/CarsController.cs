@@ -58,6 +58,25 @@ namespace RentalCars.Controllers
             return Ok(cars);
         }
 
+        [HttpPut("{carId}")]
+        public async Task<IActionResult> UpdateRentalCar(int carId, [FromBody] Car car)
+        {
+            if (car == null)
+                return NoContent();
+
+            var rentalCar = await rentalCarRepo.GetCarById(car.CarId);
+
+            if (carId != rentalCar.CarId)
+                return BadRequest("Car Id does not match the car to be updated");
+
+            await rentalCarRepo.UpdateRentalCar(car);
+
+            return CreatedAtAction(nameof(GetById),
+                new { id = car.CarId },
+                car
+                );
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddNewRentalCar([FromBody] Car car)
         {

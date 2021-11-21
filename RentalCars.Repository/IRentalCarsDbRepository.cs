@@ -14,5 +14,6 @@ namespace RentalCars.WebAPI.Repository
         Task<List<Car>> GetFeaturedCars();
         Task<Rental> GetRentalById(int rentalId);
         Task<List<Rental>> GetRentals();
+        Task UpdateRentalCar(Car car);
     }
 }

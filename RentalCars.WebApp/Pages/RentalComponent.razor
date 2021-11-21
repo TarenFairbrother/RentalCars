@@ -78,7 +78,7 @@
     private async Task OnValidSubmit()
     {
 
-        rental.Car = car;
+        rental.CarId = car.CarId;
 
         await sessionStorage.SetItemAsync("rental", rental);
 
